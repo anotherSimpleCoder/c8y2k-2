@@ -1,16 +1,17 @@
 #!/bin/bash
 
 help() {
-	echo "c8y2k - A little tool for making the Cumulocity Web SDK easier"
+	echo "c8y2k - A little tool for making the Cumulocity development easier"
 	echo
 	echo "Syntax:"
 	echo -e "\tc8y2k <command>"
 	echo
 	echo -e "\tCommand:"
-	echo -e "\t\thelp\t\tOpens this page"
-	echo -e "\t\tnew\t\tCreates a new Cumulocity Web SDK project"
-	echo -e "\t\tnew-component\tCreates a new component"
-	echo -e "\t\tnew-widget\tCreares a new widget component"
+	echo -e "\t\thelp\t\t\tOpens this page"
+	echo -e "\t\tnew\t\t\tCreates a new Cumulocity Web SDK project"
+	echo -e "\t\tnew-microservice\tCreates a new Cumulocity Java Microservice"
+	echo -e "\t\tnew-component\t\tCreates a new component"
+	echo -e "\t\tnew-widget\t\tCreares a new widget component"
 }
 
 # COMPONENT content
@@ -87,10 +88,19 @@ COMPONENT_serviceTsContent() {
 }
 
 newComponent() {
-	printf "Enter your component name: "
-	read COMPONENT_NAME
+	ENTERED="false"
+	while [ $ENTERED != "true" ]; do
+		printf "Enter your component name: "	
+		read COMPONENT_NAME
+		
+		# check if component name is empty
+		if [[ -z $COMPONENT_NAME ]]; then
+			echo "Please enter a valid component name"
+		else
+			ENTERED="true"
+		fi
 
-	# check if component name is empty
+	done
 	
 	# create source folders
 	mkdir src
@@ -179,8 +189,19 @@ WIDGET_serviceTsContent() {
 }
 
 newWidget() {
-	printf "Enter your widget name: "
-	read WIDGET_NAME
+	ENTERED="false"
+	while [ $ENTERED != "true" ]; do
+		printf "Enter your widget name: "	
+		read WIDGET_NAME
+		
+		# check if widget name is empty
+		if [[ -z $WIDGET_NAME ]]; then
+			echo "Please enter a valid widget name"
+		else
+			ENTERED="true"
+		fi
+
+	done
 
 	# check if widget name is empty
 
@@ -225,7 +246,26 @@ newProject() {
 		npm install || error 11
 	)
 
-	echo "Project successfully created!"
+	printf "Project %s successfully created!\n" $PROJECT_NAME
+}
+
+# Microservice content
+newMicroservice() {
+	git clone https://github.com/SoftwareAG/cumulocity-microservice-archetype
+	(
+		cd "cumulocity-microservice-archetype"
+		mvn install
+	)
+	sudo rm -r cumulocity*
+	mvn archetype:generate -DarchetypeGroupId=cumulocity.microservice -DarchetypeArtifactId=cumulocity-microservice-archetype
+
+	echo "Create microservice successfully"
+	docker --version > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		echo "It seems like Docker has not been installed on your machine."
+		echo "In order to deploy your microservice to Cumulocity, the Docker Engine is needed"
+		# OS Unterscheidung
+	fi
 }
 
 error() {
@@ -235,25 +275,36 @@ error() {
 			echo "npm is not installed or falsely configured!"
 			echo "c8y2k depends on npm, so in order to use it, please install npm!"
 			# OS Unterscheidung
-			exit 1
 			;;
 		11)
 			echo "Exit due to node error!"
-			exit 1
 			;;
 		12)
 			echo "The Cumulocity Web SDK supports node.js version 14.x.x"
 			echo "Please install another version or change your node version accordingly"
 			# OS Unterscheidung
 			;;
+		13)
+			echo "Apache Maven is not installed or falsely configured!"
+			echo "c8y2k depends on Apache Maven, so in order to use it, please install Apache Maven!"
+			# OS Unterscheidung
+			;;
+		14)
+			echo "git is not installed or falsely configured!"
+			echo "c8y2k depends on git, so in order to use it, please install git!"
+			# OS Unterscheidung
+			;;
 	esac
-	exit
+	exit 1
 }
 
-# Check for npm
+# Check for dependencies
 npm --version > /dev/null 2>&1 || error 10
 node --version | grep "v14*" > /dev/null 2>&1 || error 12
+mvn -v > /dev/null 2>&1 || error 13
+git version > /dev/null 2>&1 || error 14
 
+# flag filtering
 case $1 in
 	"help")
 		help
@@ -261,6 +312,10 @@ case $1 in
 
 	"new")
 		newProject
+		;;
+
+	"new-microservice")
+		newMicroservice
 		;;
 	
 	"new-component")
