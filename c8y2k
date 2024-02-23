@@ -1,6 +1,15 @@
 #!/bin/bash
 
 help() {
+	echo "                                   .::     "
+	echo "           .:               .:::.: .::     "
+	echo "   .::: .::  .::  .::   .::.:    .:.::  .::"
+	echo " .::   .::     .:  .:: .::     .:: .:: .:: "
+	echo ".::      .:: .:      .:::    .::   .:.::   "
+	echo " .::   .::     .::    .::  .::     .:: .:: "
+	echo "   .:::  .::::       .::   .:::::::.::  .::"
+	echo "                   .::                     "
+	echo
 	echo "c8y2k - A little tool for making the Cumulocity development easier"
 	echo
 	echo "Syntax:"

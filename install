@@ -1,0 +1,58 @@
+#!/bin/bash
+opts=("Install on normal path (/usr/bin) <recommended>." "Install on custom path.", "Cancel installation.")
+
+installNormalPath() {
+	echo "Installing c8y2k i /usr/bin"
+	sudo cp ./c8y2k /usr/bin || echo "Error when installing c8y2k!" && exit 1
+	echo "c8y2k has been installed successfully"
+	echo "Enter 'c8y2k' in order to use it"
+}
+
+customPath() {
+	ENTERED="false"
+
+	while [ $ENTERED != "true" ]; do
+		printf "Please enter your installation path:"
+		read INSTALL_PATH
+
+		if [ -z INSTALL_PATH ]; then
+			echo "Please enter a valid installation path!"
+		else
+			ENTERED="true"
+		fi
+	done
+
+	sudo cp ./c8y2k $INSTALL_PATH || echo "Error when installing c8y2k!" && exit 1
+}
+
+echo "                                   .::     "
+echo "           .:               .:::.: .::     "
+echo "   .::: .::  .::  .::   .::.:    .:.::  .::"
+echo " .::   .::     .:  .:: .::     .:: .:: .:: "
+echo ".::      .:: .:      .:::    .::   .:.::   "
+echo " .::   .::     .::    .::  .::     .:: .:: "
+echo "   .:::  .::::       .::   .:::::::.::  .::"
+echo "                   .::                     "
+echo
+echo "c8y2k Installer"
+echo
+
+select i in "${opts[@]}"; do
+	case $i in
+		"Install on normal path (/usr/bin) <recommended>.")
+			installNormalPath
+			break
+			;;
+
+		"Install on custom path.")
+			echo "Custom path"
+			break
+			;;
+		"Cancel installation.")
+			exit
+			;;
+		*)
+			echo "Invalid option!"
+			;;
+	esac
+done
