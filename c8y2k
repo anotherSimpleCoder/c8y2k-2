@@ -23,6 +23,10 @@ help() {
 	echo -e "\t\tnew-widget\t\tCreares a new widget component"
 }
 
+getLinuxDistroName() {
+	echo $(cat /etc/os-release | grep "ID_LIKE=" | sed 's/ID_LIKE=//g')
+}
+
 # COMPONENT content
 
 COMPONENT_componentTsContent() {
@@ -283,7 +287,34 @@ error() {
 		10)
 			echo "npm is not installed or falsely configured!"
 			echo "c8y2k depends on npm, so in order to use it, please install npm!"
-			# OS Unterscheidung
+			echo
+			echo "To install npm run:"
+
+			case $OSTYPE in
+				"linux-gnu")
+					case $(getLinuxDistroName) in
+						"debian")
+							echo -e "\tsudo apt-get install npm"
+						;;
+
+						"fedora")
+							echo -e "\tsudo yum install npm"
+						;;
+					esac
+				;;
+
+				"darwin"*)
+					echo -e "\tIf you use Homebrew:"
+					echo -e "\t\tbrew install node"
+					echo
+					echo -e "\tIf you use MacPorts:"
+					echo -e "\t\tsudo port install npm"
+				;;
+
+				"win32")
+					echo -e "\twinget install npm"
+				;;
+			esac
 			;;
 		11)
 			echo "Exit due to node error!"
@@ -291,17 +322,79 @@ error() {
 		12)
 			echo "The Cumulocity Web SDK supports node.js version 14.x.x"
 			echo "Please install another version or change your node version accordingly"
-			# OS Unterscheidung
+			echo
+			echo "To install node.js for the according version you can install Node Version manager (nvm)"
+			
+			case $OSTYPE in
+				"linux-gnu" | "darwin"*)
+					echo -e "\tcurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
+				;;
+
+				"win32")
+					echo -e "\twinget install nvm"
+				;;
+			esac
+			echo
+			echo "After that you run"
+			echo -e "\tnvm install v14.21.3"
+			echo -e "\tnvm use v14.21.3"
 			;;
 		13)
 			echo "Apache Maven is not installed or falsely configured!"
 			echo "c8y2k depends on Apache Maven, so in order to use it, please install Apache Maven!"
-			# OS Unterscheidung
+			echo
+			echo "To install Apache Maven run:"
+
+			case $OSTYPE in
+				"linux-gnu" | "darwin"*)
+					echo -e "\twget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz"
+					echo -e "\ttar -xvf apache-maven-*.tar.gz"
+					echo -e "\tmv apache-maven-* /opt/"
+					echo -e "\tM2_HOME='/opt/apache-maven-3.6.3'"
+					echo -e "\tPATH=\"\$M2_HOME/bin:\$PATH\""
+					echo -e "\texport PATH"
+				;;
+
+				"win32")
+					echo -e "\twget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz"
+					echo -e "\ttar -xvf apache-maven-*.tar.gz"
+					echo -e "\tmv apache-maven-* <place where you want maven to live>"
+					echo
+					echo "After that set the environment variables accordingly"
+				;;
+			esac
 			;;
 		14)
 			echo "git is not installed or falsely configured!"
 			echo "c8y2k depends on git, so in order to use it, please install git!"
-			# OS Unterscheidung
+			echo
+			echo "To install git, please run:"
+
+			case $OSTYPE in
+				"linux-gnu")
+					case $(getLinuxDistroName) in
+						"debian")
+							echo -e "\tsudo apt-get install git"
+						;;
+
+						"fedora")
+							echo -e "\tsudo yum install git"
+						;;
+					esac
+				;;
+
+				"darwin"*)
+					echo -e "\tIf you use Homebrew:"
+					echo -e "\t\tbrew install git"
+					echo
+					echo -e "\tIf you use MacPorts:"
+					echo -e "\t\tsudo port install git"
+				;;
+
+				"win32")
+					echo -e "winget install git"
+				;;
+			esac
 			;;
 	esac
 	exit 1
@@ -309,9 +402,9 @@ error() {
 
 # Check for dependencies
 npm --version > /dev/null 2>&1 || error 10
-node --version | grep "v14*" > /dev/null 2>&1 || error 12
+node --version 2> /dev/null | grep "v14*" > /dev/null 2>&1 || error 12
 mvn -v > /dev/null 2>&1 || error 13
-git version > /dev/null 2>&1 || error 14
+giot version > /dev/null 2>&1 || error 14
 
 # flag filtering
 case $1 in
