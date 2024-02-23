@@ -404,7 +404,7 @@ error() {
 npm --version > /dev/null 2>&1 || error 10
 node --version 2> /dev/null | grep "v14*" > /dev/null 2>&1 || error 12
 mvn -v > /dev/null 2>&1 || error 13
-giot version > /dev/null 2>&1 || error 14
+git version > /dev/null 2>&1 || error 14
 
 # flag filtering
 case $1 in
