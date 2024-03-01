@@ -15,16 +15,16 @@ Both of these tools are meant for making development with the Cumulocity ecosyst
 You can download c8ycli either via the releases tab or by using tools such as <br/><br/>
 wget
 ```bash
-wget "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-bash/main/c8y2k" && \
-wget "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-bash/main/install"
+wget "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-2/main/c8y2k" && \
+wget "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-2/main/install"
 ```
 
 <br>
 or cURL
 
 ```bash
-curl "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-bash/main/c8y2k" > c8y2k && \
-curl "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-bash/main/install" > install && \
+curl "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-2/main/c8y2k" > c8y2k && \
+curl "https://raw.githubusercontent.com/anotherSimpleCoder/c8y2k-2/main/install" > install && \
 chmod 777 c8y2k && chmod 777 install
 ```
 
